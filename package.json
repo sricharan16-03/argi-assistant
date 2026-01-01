@@ -1,0 +1,17 @@
+{
+  "name": "agriculture-assistant-backend",
+  "version": "1.0.0",
+  "description": "Backend server for Agri-Assistant",
+  "main": "api/server.js",
+  "scripts": {
+    "start": "node api/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.19.2",
+    "mongodb": "^7.0.0",
+    "mongoose": "^8.4.1",
+    "node-fetch": "^2.7.0"
+  }
+}
