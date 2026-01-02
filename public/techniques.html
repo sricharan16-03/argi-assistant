@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <header class="navbar">
     <div class="container">
         <a href="index.html" class="logo">Agri-Assistant 🌱</a>
@@ -24,7 +25,7 @@
 
 <main class="container">
     <h2>💡 Modern Farming Techniques</h2>
-    <p style="text-align: center; max-width: 700px; margin: 0 auto 40px auto;">
+    <p style="text-align:center; max-width:700px; margin:0 auto 40px auto;">
         Learn about modern techniques that can help improve crop yield,
         save resources, and promote sustainable agriculture.
     </p>
@@ -43,34 +44,35 @@
 <div class="creator-credit">Created by Sricharan, Ramcharan and Suhel</div>
 
 <script>
-window.addEventListener('DOMContentLoaded', async () => {
-    const techniquesListDiv = document.getElementById('techniques-list');
+    // Consistent with all other pages
+    const API_BASE = "/api";
 
-    try {
-        // 🔥 Vercel API Route
-        const response = await fetch('/api/techniques');
+    window.addEventListener("DOMContentLoaded", async () => {
+        const techniquesListDiv = document.getElementById("techniques-list");
 
-        if (!response.ok) throw new Error('Failed to fetch data.');
+        try {
+            const response = await fetch(`${API_BASE}/techniques`);
+            if (!response.ok) throw new Error("Failed to fetch data");
 
-        const techniques = await response.json();
-        techniquesListDiv.innerHTML = '';
+            const techniques = await response.json();
+            techniquesListDiv.innerHTML = "";
 
-        techniques.forEach(technique => {
-            const techCard = document.createElement('div');
-            techCard.className = 'card';
-            techCard.innerHTML = `
-                <h3>${technique.name}</h3>
-                <p>${technique.desc}</p>
-            `;
-            techniquesListDiv.appendChild(techCard);
-        });
+            techniques.forEach(technique => {
+                const techCard = document.createElement("div");
+                techCard.className = "card";
+                techCard.innerHTML = `
+                    <h3>${technique.name}</h3>
+                    <p>${technique.desc}</p>
+                `;
+                techniquesListDiv.appendChild(techCard);
+            });
 
-    } catch (error) {
-        console.error('Error fetching techniques:', error);
-        techniquesListDiv.innerHTML =
-            '<p style="color: red;">Could not load techniques. Please ensure the backend server is live.</p>';
-    }
-});
+        } catch (error) {
+            console.error("Error fetching techniques:", error);
+            techniquesListDiv.innerHTML =
+                '<p style="color:red;">Could not load techniques. Please ensure the backend API is working.</p>';
+        }
+    });
 </script>
 
 </body>

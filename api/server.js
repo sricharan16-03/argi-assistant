@@ -11,7 +11,7 @@ const Crop = require("../models/Crop");
 
 const app = express();
 
-// -------- CORS (works for local + Vercel) --------
+// ---------- CORS (local + vercel friendly) ----------
 app.use(
   cors({
     origin: true,
@@ -21,7 +21,7 @@ app.use(
 
 app.use(express.json());
 
-// -------- MongoDB (serverless-safe connection) --------
+// ---------- MongoDB (serverless-safe) ----------
 let isConnected = false;
 
 async function connectDB() {
@@ -40,15 +40,15 @@ connectDB().catch(err =>
   console.error("❌ MongoDB connection error:", err)
 );
 
-// -------- TEST / HEALTH ROUTE --------
-app.get("/health", (req, res) => {
+// ---------- HEALTH CHECK ----------
+app.get("/api/health", (req, res) => {
   res.json({ ok: true, message: "API running" });
 });
 
-// -------- ROUTES --------
+// ---------- ROUTES ----------
 
-// Crop Recommender (ML API proxy)
-app.post("/recommend", async (req, res) => {
+// Crop Recommender → calls ML model API
+app.post("/api/recommend", async (req, res) => {
   try {
     const response = await fetch("https://agri-ml-api.onrender.com/predict", {
       method: "POST",
@@ -68,7 +68,7 @@ app.post("/recommend", async (req, res) => {
 });
 
 // Crops
-app.get("/crops", async (req, res) => {
+app.get("/api/crops", async (req, res) => {
   try {
     const crops = await Crop.find();
 
@@ -86,7 +86,7 @@ app.get("/crops", async (req, res) => {
 });
 
 // Techniques
-app.get("/techniques", (req, res) => {
+app.get("/api/techniques", (req, res) => {
   res.json([
     { name: "Drip Irrigation", desc: "Efficient water use for crops." },
     { name: "Organic Farming", desc: "Eco-friendly farming techniques." },
@@ -97,7 +97,7 @@ app.get("/techniques", (req, res) => {
 });
 
 // Schemes
-app.get("/schemes", (req, res) => {
+app.get("/api/schemes", (req, res) => {
   res.json([
     {
       name: "PM-Kisan Samman Nidhi",
@@ -121,7 +121,7 @@ app.get("/schemes", (req, res) => {
 });
 
 // Diseases
-app.get("/diseases", (req, res) => {
+app.get("/api/diseases", (req, res) => {
   res.json([
     { crop: "Wheat", disease: "Rust", solution: "Resistant varieties + fungicide" },
     { crop: "Rice", disease: "Blast", solution: "Spacing + proper fungicide" },
@@ -130,7 +130,7 @@ app.get("/diseases", (req, res) => {
 });
 
 // NPK Advisor
-app.post("/npk-advisor", (req, res) => {
+app.post("/api/npk-advisor", (req, res) => {
   const { N, P, K } = req.body;
   const advice = [];
 
@@ -142,11 +142,11 @@ app.post("/npk-advisor", (req, res) => {
 });
 
 // Contact Form
-app.post("/contact", async (req, res) => {
+app.post("/api/contact", async (req, res) => {
   const { name, email, message } = req.body;
   await new Contact({ name, email, message }).save();
   res.json({ success: true, msg: "Message saved!" });
 });
 
-// -------- EXPORT (NO app.listen on Vercel) --------
+// ---------- EXPORT FOR VERCEL ----------
 module.exports = app;

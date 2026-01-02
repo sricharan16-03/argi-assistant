@@ -6,17 +6,6 @@
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "api/server.js" },
-
-    { "src": "/", "dest": "public/index.html" },
-
-    { "src": "/contact", "dest": "public/contact.html" },
-    { "src": "/crop-data", "dest": "public/crop-data.html" },
-    { "src": "/diseases", "dest": "public/diseases.html" },
-    { "src": "/npk-advisor", "dest": "public/npk-advisor.html" },
-    { "src": "/recommender", "dest": "public/recommender.html" },
-    { "src": "/schemes", "dest": "public/schemes.html" },
-    { "src": "/techniques", "dest": "public/techniques.html" },
-
     { "src": "/(.*)", "dest": "public/$1" }
   ]
 }
