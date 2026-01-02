@@ -21,25 +21,41 @@
             </nav>
         </div>
     </header>
+
     <main class="container">
         <h2>Crop Information Database</h2>
         <div id="crop-list" class="feature-cards">
             <p>Loading crop data...</p>
         </div>
     </main>
+
     <footer class="footer">
-        <div class="container"><p>&copy; 2025 Agriculture Assistant. All Rights Reserved.</p></div>
+        <div class="container">
+            <p>&copy; 2025 Agriculture Assistant. All Rights Reserved.</p>
+        </div>
     </footer>
-    <div class="creator-credit">Created by Sricharan, Ramcharan and Suhel</div>
+
+    <div class="creator-credit">
+        Created by Sricharan, Ramcharan and Suhel
+    </div>
+
     <script>
+        const API_BASE =
+            window.location.origin.includes("localhost")
+            ? "http://localhost:3000"
+            : window.location.origin;
+
         window.addEventListener('DOMContentLoaded', async () => {
             const cropListDiv = document.getElementById('crop-list');
+
             try {
-                // ✅ CORRECTED URL
-                const response = await fetch('https://agri-server-final.onrender.com/crops');
+                const response = await fetch(`${API_BASE}/api/crops`);
+
                 if (!response.ok) throw new Error('Network response was not ok');
+
                 const crops = await response.json();
-                cropListDiv.innerHTML = ''; 
+                cropListDiv.innerHTML = '';
+
                 crops.forEach(crop => {
                     const cropCard = document.createElement('div');
                     cropCard.className = 'card';
@@ -51,9 +67,11 @@
                     `;
                     cropListDiv.appendChild(cropCard);
                 });
+
             } catch (error) {
                 console.error('Failed to fetch crop data:', error);
-                cropListDiv.innerHTML = '<p style="color: red;">Failed to load crop data. Please ensure the backend server is live and try again.</p>';
+                cropListDiv.innerHTML =
+                    '<p style="color: red;">Failed to load crop data. Please ensure the backend server is live and try again.</p>';
             }
         });
     </script>

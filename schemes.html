@@ -21,42 +21,64 @@
             </nav>
         </div>
     </header>
+
     <main class="container">
         <h2>🇮🇳 Government Schemes for Farmers</h2>
         <p style="text-align: center; max-width: 700px; margin: 0 auto 40px auto;">
             Explore various beneficial schemes provided by the government to support farmers and promote agricultural growth in India.
         </p>
+
         <div id="schemes-list" class="feature-cards">
             <p>Loading schemes...</p>
         </div>
     </main>
+
     <footer class="footer">
-        <div class="container"><p>&copy; 2025 Agriculture Assistant. All Rights Reserved.</p></div>
+        <div class="container">
+            <p>&copy; 2025 Agriculture Assistant. All Rights Reserved.</p>
+        </div>
     </footer>
-    <div class="creator-credit">Created by Sricharan, Ramcharan and Suehl</div>
+
+    <div class="creator-credit">
+        Created by Sricharan, Ramcharan and Suehl
+    </div>
+
     <script>
+        const API_BASE =
+            window.location.origin.includes("localhost")
+            ? "http://localhost:3000"
+            : window.location.origin;
+
         window.addEventListener('DOMContentLoaded', async () => {
             const schemesListDiv = document.getElementById('schemes-list');
+
             try {
-                // ✅ CORRECTED URL
-                const response = await fetch('https://agri-server-final.onrender.com/schemes');
-                if (!response.ok) throw new Error('Failed to fetch data.');
+                const response = await fetch(`${API_BASE}/api/schemes`);
+
+                if (!response.ok)
+                    throw new Error('Failed to fetch data.');
+
                 const schemes = await response.json();
                 schemesListDiv.innerHTML = '';
+
                 schemes.forEach(scheme => {
                     const schemeCard = document.createElement('div');
                     schemeCard.className = 'card';
+
                     schemeCard.innerHTML = `
                         <h3>${scheme.name}</h3>
                         <p><strong>Benefit:</strong> ${scheme.benefit}</p>
                         <p class="scheme-desc">${scheme.desc}</p>
                         <a href="${scheme.link}" target="_blank" class="view-button">View Details</a>
                     `;
+
                     schemesListDiv.appendChild(schemeCard);
                 });
+
             } catch (error) {
                 console.error('Error fetching schemes:', error);
-                schemesListDiv.innerHTML = '<p style="color: red;">Could not load government schemes. Please ensure the backend server is live and try again.</p>';
+                schemesListDiv.innerHTML =
+                    '<p style="color: red;">Could not load government schemes. Please ensure the backend server is live and try again.</p>';
             }
         });
     </script>

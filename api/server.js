@@ -11,28 +11,17 @@ const Crop = require("../models/Crop");
 
 const app = express();
 
-const allowedOrigins = [
-  "https://sricharan16-03.github.io",
-  "http://localhost:3000",
-  "http://127.0.0.1:5500"
-];
-
+// -------- CORS (works for local + Vercel) --------
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: true,
     credentials: true,
   })
 );
 
 app.use(express.json());
 
-// ---------- MongoDB (safe for serverless) ----------
+// -------- MongoDB (serverless-safe connection) --------
 let isConnected = false;
 
 async function connectDB() {
@@ -51,7 +40,14 @@ connectDB().catch(err =>
   console.error("❌ MongoDB connection error:", err)
 );
 
-// ---------- Routes ----------
+// -------- TEST / HEALTH ROUTE --------
+app.get("/health", (req, res) => {
+  res.json({ ok: true, message: "API running" });
+});
+
+// -------- ROUTES --------
+
+// Crop Recommender (ML API proxy)
 app.post("/recommend", async (req, res) => {
   try {
     const response = await fetch("https://agri-ml-api.onrender.com/predict", {
@@ -71,6 +67,7 @@ app.post("/recommend", async (req, res) => {
   }
 });
 
+// Crops
 app.get("/crops", async (req, res) => {
   try {
     const crops = await Crop.find();
@@ -88,6 +85,7 @@ app.get("/crops", async (req, res) => {
   }
 });
 
+// Techniques
 app.get("/techniques", (req, res) => {
   res.json([
     { name: "Drip Irrigation", desc: "Efficient water use for crops." },
@@ -98,6 +96,7 @@ app.get("/techniques", (req, res) => {
   ]);
 });
 
+// Schemes
 app.get("/schemes", (req, res) => {
   res.json([
     {
@@ -121,6 +120,7 @@ app.get("/schemes", (req, res) => {
   ]);
 });
 
+// Diseases
 app.get("/diseases", (req, res) => {
   res.json([
     { crop: "Wheat", disease: "Rust", solution: "Resistant varieties + fungicide" },
@@ -129,6 +129,7 @@ app.get("/diseases", (req, res) => {
   ]);
 });
 
+// NPK Advisor
 app.post("/npk-advisor", (req, res) => {
   const { N, P, K } = req.body;
   const advice = [];
@@ -140,11 +141,12 @@ app.post("/npk-advisor", (req, res) => {
   res.json({ advice });
 });
 
+// Contact Form
 app.post("/contact", async (req, res) => {
   const { name, email, message } = req.body;
   await new Contact({ name, email, message }).save();
   res.json({ success: true, msg: "Message saved!" });
 });
 
-// ---------- EXPORT (no app.listen on Vercel) ----------
+// -------- EXPORT (NO app.listen on Vercel) --------
 module.exports = app;
